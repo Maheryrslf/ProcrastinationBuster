@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import ProgressBarCard from './ProgressBarCard';
 import ActiveTasksCard from './ActiveTasksCard';
-import CompletedTasksCard from './CompletedTasksCard'; // Pour la liste des tâches complétées
+import CompletedTasksCard from './CompletedTasksCard'; 
 import TotalTasksCard from './TotalTasksCard';
-import CompletedTasksStatCard from './CompletedTasksStatCard'; // Pour la stat des tâches accomplies
+import CompletedTasksStatCard from './CompletedTasksStatCard'; 
 import TotalTimeCard from './TotalTimeCard';
 import RewardNotification from './RewardNotification';
 import TutorialPage from './TutorialPage'; // Nouveau composant pour la page de tutoriel
@@ -85,7 +85,7 @@ const DashboardContainer = () => {
          
         </div>
       </div>
-      {/* Bouton fixe pour voir le tutoriel */}
+  
       <button
         onClick={() => setIsTutorialOpen(true)}
         className="fixed bottom-4 right-4 bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 transition flex items-center space-x-2"
@@ -93,7 +93,7 @@ const DashboardContainer = () => {
       >
         <span>Voir le tutoriel</span>
       </button>
-      {/* Page de tutoriel */}
+    
       {isTutorialOpen && <TutorialPage onClose={closeTutorial} />}
     </div>
   );
