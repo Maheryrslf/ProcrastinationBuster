@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import ProgressBarCard from './ProgressBarCard';
-import ActiveTasksCard from './ActiveTasksCard';
-import CompletedTasksCard from './CompletedTasksCard'; // Pour la liste des tâches complétées
-import TotalTasksCard from './TotalTasksCard';
-import CompletedTasksStatCard from './CompletedTasksStatCard'; // Pour la stat des tâches accomplies
-import TotalTimeCard from './TotalTimeCard';
-import RewardNotification from './RewardNotification';
-import TutorialPage from './TutorialPage'; // Nouveau composant pour la page de tutoriel
 import AddTaskForm from './AddTaskForm';
+import ActiveTasksCard from './ActiveTasksCard';
+import CompletedTasksCard from './CompletedTasksCard';
+import TotalTimeTitleCard from './TotalTimeTitleCard';
+import HoursCard from './HoursCard';
+import MinutesCard from './MinutesCard';
+import SecondsCard from './SecondsCard';
+import TotalTasksCard from './TotalTasksCard';
+import CompletedTasksStatCard from './CompletedTasksStatCard';
+import RewardNotification from './RewardNotification';
+import TutorialPage from './TutorialPage';
 
 // Composant principal
 const DashboardContainer = () => {
@@ -16,13 +19,21 @@ const DashboardContainer = () => {
   const [newTask, setNewTask] = useState('');
   const [newTime, setNewTime] = useState(0);
   const [rewardMessage, setRewardMessage] = useState(null);
-  const [isTutorialOpen, setIsTutorialOpen] = useState(false); // État pour la page de tutoriel
+  const [remainingSeconds, setRemainingSeconds] = useState(0);
+  const [isTutorialOpen, setIsTutorialOpen] = useState(false);
 
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter(task => task.completed).length;
   const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
-  const totalTime = tasks.reduce((sum, task) => sum + (task.timeEstimated || 0), 0);
+  const totalTimeMinutes = tasks.reduce((sum, task) => sum + (task.timeEstimated || 0), 0);
 
+  useEffect(() => {
+    // Compteur à rebours
+    const interval = setInterval(() => {
+      setRemainingSeconds(prev => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const addTask = (e) => {
     e.preventDefault();
@@ -31,6 +42,7 @@ const DashboardContainer = () => {
     setTasks(newTasks);
     setNewTask('');
     setNewTime(0);
+    setRemainingSeconds(prev => prev + parseInt(newTime) * 60);
     checkRewards(newTasks);
   };
 
@@ -39,6 +51,12 @@ const DashboardContainer = () => {
       task.id === id ? { ...task, completed: !task.completed } : task
     );
     setTasks(newTasks);
+    // Réduire le temps restant si la tâche est marquée comme terminée
+    const task = newTasks.find(t => t.id === id);
+    if (task && task.completed) {
+      const timeToSubtract = task.timeEstimated * 60; // Convertir en secondes
+      setRemainingSeconds(prev => Math.max(prev - timeToSubtract, 0)); // Ne pas passer en dessous de 0
+    }
     checkRewards(newTasks);
   };
 
@@ -64,9 +82,14 @@ const DashboardContainer = () => {
     setIsTutorialOpen(false);
   };
 
+  // Calcul des heures, minutes, secondes restantes
+  const hours = Math.floor(remainingSeconds / 3600);
+  const minutes = Math.floor((remainingSeconds % 3600) / 60);
+  const seconds = remainingSeconds % 60;
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-yellow-300 via-yellow-500 to-orange-500 dark:bg-gradient-to-b dark:from-blue-700 dark:to-indigo-800 dark:to-gray-900 flex flex-col font-poppins relative">
-      <Navbar /> 
+    <div className="min-h-screen bg-gradient-to-b from-yellow-300 via-yellow-500 to-orange-500 dark:bg-gradient-to-b dark:from-blue-800 dark:to-indigo-900 flex flex-col font-poppins relative">
+      <Navbar />
       <div className="flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-4xl space-y-6">
           <ProgressBarCard progress={progress} completedTasks={completedTasks} totalTasks={totalTasks} className="col-span-full" />
@@ -75,17 +98,19 @@ const DashboardContainer = () => {
             <ActiveTasksCard tasks={tasks.filter(task => !task.completed)} toggleTask={toggleTask} deleteTask={deleteTask} />
             <CompletedTasksCard tasks={tasks.filter(task => task.completed)} toggleTask={toggleTask} deleteTask={deleteTask} />
           </div>
+          <TotalTimeTitleCard />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <HoursCard hours={hours} />
+            <MinutesCard minutes={minutes} />
+            <SecondsCard seconds={seconds} />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <TotalTasksCard totalTasks={totalTasks} />
             <CompletedTasksStatCard completedTasks={completedTasks} />
-            <TotalTimeCard totalTime={totalTime} />
           </div>
           <RewardNotification rewardMessage={rewardMessage} />
-         
-         
         </div>
       </div>
-      {/* Bouton fixe pour voir le tutoriel */}
       <button
         onClick={() => setIsTutorialOpen(true)}
         className="fixed bottom-4 right-4 bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 transition flex items-center space-x-2"
@@ -93,7 +118,6 @@ const DashboardContainer = () => {
       >
         <span>Voir le tutoriel</span>
       </button>
-      {/* Page de tutoriel */}
       {isTutorialOpen && <TutorialPage onClose={closeTutorial} />}
     </div>
   );
