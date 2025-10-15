@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import ProgressBarCard from './ProgressBarCard';
+<<<<<<< HEAD
+=======
+import ActiveTasksCard from './ActiveTasksCard';
+import CompletedTasksCard from './CompletedTasksCard'; 
+import TotalTasksCard from './TotalTasksCard';
+import CompletedTasksStatCard from './CompletedTasksStatCard'; 
+import TotalTimeCard from './TotalTimeCard';
+import RewardNotification from './RewardNotification';
+import TutorialPage from './TutorialPage'; // Nouveau composant pour la page de tutoriel
+>>>>>>> f46c747e7ef5b27d78541ed7899384e7492ad4b5
 import AddTaskForm from './AddTaskForm';
 import ActiveTasksCard from './ActiveTasksCard';
 import CompletedTasksCard from './CompletedTasksCard';
@@ -111,6 +121,10 @@ const DashboardContainer = () => {
           <RewardNotification rewardMessage={rewardMessage} />
         </div>
       </div>
+<<<<<<< HEAD
+=======
+  
+>>>>>>> f46c747e7ef5b27d78541ed7899384e7492ad4b5
       <button
         onClick={() => setIsTutorialOpen(true)}
         className="fixed bottom-4 right-4 bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 transition flex items-center space-x-2"
@@ -118,6 +132,10 @@ const DashboardContainer = () => {
       >
         <span>Voir le tutoriel</span>
       </button>
+<<<<<<< HEAD
+=======
+    
+>>>>>>> f46c747e7ef5b27d78541ed7899384e7492ad4b5
       {isTutorialOpen && <TutorialPage onClose={closeTutorial} />}
     </div>
   );
