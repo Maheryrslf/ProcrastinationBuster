@@ -11,14 +11,14 @@ const AddTaskForm = ({ newTask, setNewTask, newTime, setNewTime, addTask }) => {
           value={newTask}
           onChange={(e) => setNewTask(e.target.value)}
           placeholder="Ajoutez une nouvelle tâche..."
-          className="flex-1 p-2 border border-none rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent"
+          className="flex-1 text-black dark:text-white p-2 border border-none rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent"
         />
         <input
           type="number"
           value={newTime}
           onChange={(e) => setNewTime(e.target.value)}
           placeholder="Temps (min)"
-          className="w-24 p-2 border border-none rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent"
+          className="w-24 text-black dark:text-white  p-2 border border-none rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent"
           min="1"
         />
         <button
