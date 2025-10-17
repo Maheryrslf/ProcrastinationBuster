@@ -1,14 +1,18 @@
 import React from 'react';
 import TaskItem from './TaskItem';
 
-// Carte pour les tâches actives
 const ActiveTasksCard = ({ tasks, toggleTask, deleteTask }) => {
   return (
-    <div className="backdrop-blur-md bg-white/30 dark:bg-gray-800/30 rounded-2xl shadow-lg p-6 border border-white/20">
-      <h2 className="text-xl font-bold text-black dark:text-white mb-4">Tâches Actives</h2>
-      <ul className="space-y-4">
+    <div className="rounded-2xl shadow-lg p-6 bg-gradient-to-br from-indigo-400/30 to-purple-400/20 dark:from-gray-900/40 dark:to-gray-800/20 border border-white/10 backdrop-blur-lg transition-all hover:scale-[1.01]">
+      <h2 className="text-2xl font-semibold mb-4 text-white drop-shadow-sm">Tâches Actives</h2>
+      <ul className="space-y-3">
         {tasks.map(task => (
-          <TaskItem key={task.id} task={task} toggleTask={toggleTask} deleteTask={deleteTask} />
+          <TaskItem
+            key={task.id}
+            task={task}
+            toggleTask={toggleTask}
+            deleteTask={deleteTask}
+          />
         ))}
       </ul>
     </div>

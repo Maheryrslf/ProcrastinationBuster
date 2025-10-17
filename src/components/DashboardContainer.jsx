@@ -28,7 +28,7 @@ const DashboardContainer = () => {
   const totalTimeMinutes = tasks.reduce((sum, task) => sum + (task.timeEstimated || 0), 0);
 
   useEffect(() => {
-    // Compteur à rebours
+    // Compteur à rebours global
     const interval = setInterval(() => {
       setRemainingSeconds(prev => (prev > 0 ? prev - 1 : 0));
     }, 1000);
@@ -38,7 +38,8 @@ const DashboardContainer = () => {
   const addTask = (e) => {
     e.preventDefault();
     if (newTask.trim() === '' || newTime <= 0) return;
-    const newTasks = [...tasks, { id: Date.now(), text: newTask, completed: false, timeEstimated: parseInt(newTime) }];
+    const newId = Date.now();
+    const newTasks = [...tasks, { id: newId, text: newTask, completed: false, timeEstimated: parseInt(newTime), isNew: true }];
     setTasks(newTasks);
     setNewTask('');
     setNewTime(0);
@@ -51,11 +52,10 @@ const DashboardContainer = () => {
       task.id === id ? { ...task, completed: !task.completed } : task
     );
     setTasks(newTasks);
-    // Réduire le temps restant si la tâche est marquée comme terminée
     const task = newTasks.find(t => t.id === id);
     if (task && task.completed) {
-      const timeToSubtract = task.timeEstimated * 60; // Convertir en secondes
-      setRemainingSeconds(prev => Math.max(prev - timeToSubtract, 0)); // Ne pas passer en dessous de 0
+      const timeToSubtract = task.timeEstimated * 60;
+      setRemainingSeconds(prev => Math.max(prev - timeToSubtract, 0));
     }
     checkRewards(newTasks);
   };
@@ -65,6 +65,17 @@ const DashboardContainer = () => {
     setTasks(newTasks);
     checkRewards(newTasks);
   };
+  const handleAddTask = () => {
+  const newTask = {
+    id: Date.now(),
+    text: inputValue,
+    timeEstimated: selectedTime, // durée en minutes
+    completed: false,
+    isNew: true, // ✅ important pour activer le compteur
+  };
+  setTasks([...tasks, newTask]);
+};
+
 
   const checkRewards = (updatedTasks) => {
     const updatedCompleted = updatedTasks.filter(t => t.completed).length;
@@ -82,7 +93,6 @@ const DashboardContainer = () => {
     setIsTutorialOpen(false);
   };
 
-  // Calcul des heures, minutes, secondes restantes
   const hours = Math.floor(remainingSeconds / 3600);
   const minutes = Math.floor((remainingSeconds % 3600) / 60);
   const seconds = remainingSeconds % 60;
